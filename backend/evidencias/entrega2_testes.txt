@@ -1,0 +1,44 @@
+# Evidência de testes — Entrega 2 (2026-11-15 23:28)
+## python -m unittest tests.test_password_hashing tests.test_auth_service tests.test_user_service -v
+test_correct_and_incorrect_password (tests.test_password_hashing.Argon2idHasherTest.test_correct_and_incorrect_password) ... ok
+test_hash_is_phc_with_owasp_parameters (tests.test_password_hashing.Argon2idHasherTest.test_hash_is_phc_with_owasp_parameters) ... ok
+test_needs_rehash_when_parameters_change (tests.test_password_hashing.Argon2idHasherTest.test_needs_rehash_when_parameters_change) ... ok
+test_salt_is_stored_and_random (tests.test_password_hashing.Argon2idHasherTest.test_salt_is_stored_and_random) ... ok
+test_tampered_or_malformed_hash_is_rejected (tests.test_password_hashing.Argon2idHasherTest.test_tampered_or_malformed_hash_is_rejected) ... ok
+test_unicode_password (tests.test_password_hashing.Argon2idHasherTest.test_unicode_password) ... ok
+test_uses_constant_time_comparison_from_library (tests.test_password_hashing.Argon2idHasherTest.test_uses_constant_time_comparison_from_library) ... ok
+test_legacy_hash_is_migrated_on_successful_login (tests.test_password_hashing.SecureRegistrationAndLoginTest.test_legacy_hash_is_migrated_on_successful_login) ... ok
+test_login_correct (tests.test_password_hashing.SecureRegistrationAndLoginTest.test_login_correct) ... ok
+test_login_incorrect (tests.test_password_hashing.SecureRegistrationAndLoginTest.test_login_incorrect) ... ok
+test_stored_record_has_no_plaintext_password (tests.test_password_hashing.SecureRegistrationAndLoginTest.test_stored_record_has_no_plaintext_password) ... ok
+test_unknown_email_still_computes_a_hash (tests.test_password_hashing.SecureRegistrationAndLoginTest.test_unknown_email_still_computes_a_hash) ... ok
+test_legacy_pbkdf2_hash_still_verifies_and_needs_rehash (tests.test_password_hashing.UpgradingHasherTest.test_legacy_pbkdf2_hash_still_verifies_and_needs_rehash) ... ok
+test_new_hashes_use_argon2id (tests.test_password_hashing.UpgradingHasherTest.test_new_hashes_use_argon2id) ... ok
+test_unknown_format_is_rejected (tests.test_password_hashing.UpgradingHasherTest.test_unknown_format_is_rejected) ... ok
+test_inactive_user_cannot_login (tests.test_auth_service.AuthServiceTest.test_inactive_user_cannot_login) ... ok
+test_invalid_token (tests.test_auth_service.AuthServiceTest.test_invalid_token) ... ok
+test_login_does_not_apply_strength_rules (tests.test_auth_service.AuthServiceTest.test_login_does_not_apply_strength_rules) ... ok
+test_login_success_returns_session (tests.test_auth_service.AuthServiceTest.test_login_success_returns_session) ... ok
+test_login_validates_email (tests.test_auth_service.AuthServiceTest.test_login_validates_email) ... ok
+test_login_validates_password (tests.test_auth_service.AuthServiceTest.test_login_validates_password) ... ok
+test_login_wrong_password_or_unknown_email_same_message (tests.test_auth_service.AuthServiceTest.test_login_wrong_password_or_unknown_email_same_message) ... ok
+test_logout_invalidates_token (tests.test_auth_service.AuthServiceTest.test_logout_invalidates_token) ... ok
+test_session_expires (tests.test_auth_service.AuthServiceTest.test_session_expires) ... ok
+test_change_password_requires_current_and_revokes_sessions (tests.test_user_service.UserServiceTest.test_change_password_requires_current_and_revokes_sessions) ... ok
+test_create_user_normalizes_data_and_hashes_password (tests.test_user_service.UserServiceTest.test_create_user_normalizes_data_and_hashes_password) ... ok
+test_create_user_rejects_duplicate_email (tests.test_user_service.UserServiceTest.test_create_user_rejects_duplicate_email) ... ok
+test_create_user_validates_fields (tests.test_user_service.UserServiceTest.test_create_user_validates_fields) ... ok
+test_delete_user_removes_user_and_sessions (tests.test_user_service.UserServiceTest.test_delete_user_removes_user_and_sessions) ... ok
+test_get_and_list_users (tests.test_user_service.UserServiceTest.test_get_and_list_users) ... ok
+test_update_user (tests.test_user_service.UserServiceTest.test_update_user) ... ok
+test_update_user_rejects_email_of_another_user (tests.test_user_service.UserServiceTest.test_update_user_rejects_email_of_another_user) ... ok
+
+----------------------------------------------------------------------
+Ran 32 tests in 3.303s
+
+OK
+
+## Suíte completa: python -m unittest discover
+Ran 87 tests in 12.178s
+
+OK

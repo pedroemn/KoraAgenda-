@@ -1,0 +1,121 @@
+Demonstração Entrega 2 — 2026-11-15 23:28:40
+
+========================================================================
+ 1. Configuração do hash de senha
+========================================================================
+Algoritmo principal: Argon2id (RFC 9106) via biblioteca `cryptography`
+  memória (m)   = 19456 KiB (~19 MiB por tentativa)
+  iterações (t) = 2
+  paralelismo   = 1
+  salt          = 16 bytes aleatórios (secrets) por senha
+  hash          = 32 bytes
+Legado aceito só para migração: PBKDF2-HMAC-SHA256, 600,000 iterações
+
+========================================================================
+ 2. Cadastro — o que fica armazenado
+========================================================================
+Dois usuários cadastrados com a MESMA senha: 'senha1234'
+[
+  {
+    "name": "Ana Souza",
+    "email": "ana@email.com",
+    "phone": "11911112222",
+    "password_hash": "$argon2id$v=19$m=19456,t=2,p=1$+nFxdeyVNtzgpXI2dA6TqA$zpWwHUq3zw6UGWoxjt1LZ3esh9rgQeWHsrtmFZ8j9b0",
+    "id": "3fca3668-bfde-4407-8a18-7a5c36396d18",
+    "is_active": true,
+    "created_at": "2026-11-16T02:28:40.851608+00:00",
+    "updated_at": "2026-11-16T02:28:40.851631+00:00"
+  },
+  {
+    "name": "Bruno Lima",
+    "email": "bruno@email.com",
+    "phone": "21933334444",
+    "password_hash": "$argon2id$v=19$m=19456,t=2,p=1$0nPUJchJi/FUKUk5F6CA8g$pi/2r7QJbAmqHeJy2TCMlkk3acp7lpETnNaxDn+iMXU",
+    "id": "e56b43df-e505-4ab3-97e0-0ade62ff7c51",
+    "is_active": true,
+    "created_at": "2026-11-16T02:28:40.937155+00:00",
+    "updated_at": "2026-11-16T02:28:40.937175+00:00"
+  }
+]
+
+Ana Souza: algoritmo=argon2id v=19 parâmetros=m=19456,t=2,p=1
+  salt = +nFxdeyVNtzgpXI2dA6TqA
+  hash = zpWwHUq3zw6UGWoxjt1LZ3esh9rgQeWHsrtmFZ8j9b0
+
+Bruno Lima: algoritmo=argon2id v=19 parâmetros=m=19456,t=2,p=1
+  salt = 0nPUJchJi/FUKUk5F6CA8g
+  hash = pi/2r7QJbAmqHeJy2TCMlkk3acp7lpETnNaxDn+iMXU
+
+-> Mesma senha, hashes DIFERENTES (salt único por usuário).
+-> Nenhum campo contém a senha em texto puro.
+-> Registro salvo em evidencias\entrega2_registros.json
+
+========================================================================
+ 3. Login correto e incorreto
+========================================================================
+Senha correta            75.0 ms  OK   -> sessão iduzWrbsZ7Ra… válida até 03:28
+Senha errada             75.7 ms  NEGADO -> AuthenticationError: E-mail ou senha inválidos.
+Maiúscula diferente      66.3 ms  NEGADO -> AuthenticationError: E-mail ou senha inválidos.
+E-mail inexistente       75.1 ms  NEGADO -> AuthenticationError: E-mail ou senha inválidos.
+E-mail inválido           0.0 ms  NEGADO -> ValidationError: E-mail inválido.
+Senha vazia               0.0 ms  NEGADO -> ValidationError: Informe a senha.
+
+-> Senha errada e e-mail inexistente dão a MESMA mensagem e tempo
+   parecido (um hash 'falso' é calculado), sem revelar quem tem conta.
+
+========================================================================
+ 4. Por que SHA-256 isolado NÃO serve para senhas
+========================================================================
+a) Sem salt, a mesma senha gera sempre o mesmo hash:
+   Ana   : 2c70dfbc967bd610fc7fbc6dfef0708a99d6be1fc44be3dffa47f0dde132442b
+   Bruno : 2c70dfbc967bd610fc7fbc6dfef0708a99d6be1fc44be3dffa47f0dde132442b
+   -> quem vê o banco sabe que os dois têm a mesma senha, e tabelas
+      pré-calculadas (rainbow tables) quebram o hash na hora.
+
+b) Ataque de dicionário contra o hash SHA-256 vazado:
+   senha descoberta: 'senha1234' em 0.036 ms
+
+c) Velocidade — quanto mais rápido, pior para senhas:
+   SHA-256  :        530,394 tentativas/s (1 núcleo de CPU; GPUs fazem bilhões)
+   Argon2id :           14.6 tentativas/s (e ~19 MiB de RAM por tentativa)
+   -> Argon2id é ~36,239x mais caro por tentativa.
+   Testar a lista rockyou (14,344,391 senhas) contra UM usuário:
+      SHA-256  ~ 27.04 s
+      Argon2id ~ 11.3 dias
+
+   SHA-256 foi feito para ser RÁPIDO (integridade de arquivos, assinaturas).
+   Senha precisa de função LENTA, com salt e custo ajustável (KDF de senha).
+
+========================================================================
+ 5. Comparação segura (tempo constante) pela biblioteca
+========================================================================
+Código que valida a senha (app/core/security.py):
+
+       def verify(self, password: str, stored_hash: str) -> bool:
+           parsed = self._parse(stored_hash)
+           if parsed is None:
+               return False
+           memory, iterations, lanes, salt, expected = parsed
+           actual = self._derive(password, salt, memory, iterations, lanes, len(expected))
+           # Comparação em tempo constante feita pela biblioteca padrão.
+           return hmac.compare_digest(actual, expected)
+
+hmac.compare_digest(iguais)     -> True
+hmac.compare_digest(diferentes) -> False
+
+-> `==` para no primeiro byte diferente: o tempo de resposta vaza
+   quantos bytes estão certos (timing attack). `hmac.compare_digest`
+   sempre percorre tudo, levando o mesmo tempo para qualquer entrada.
+
+========================================================================
+ 6. Compatibilidade: migração de hash legado (sem quebrar contas)
+========================================================================
+Conta antiga com hash PBKDF2 de 200.000 iterações (configuração anterior):
+   antes : pbkdf2_sha256$200000$eb378249610da86ed96fee0f1d6a3d2b$c9a390…
+Login correto -> hash regravado automaticamente com Argon2id:
+   depois: $argon2id$v=19$m=19456,t=2,p=1$NheYm1AbdY3kTba63SRSCA$2P4jcl…
+-> Nenhum usuário precisou trocar a senha e nada foi removido.
+
+========================================================================
+ FIM — evidências salvas em backend/evidencias/
+========================================================================

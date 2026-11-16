@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Ana Souza",
+    "email": "ana@email.com",
+    "phone": "11911112222",
+    "password_hash": "$argon2id$v=19$m=19456,t=2,p=1$+nFxdeyVNtzgpXI2dA6TqA$zpWwHUq3zw6UGWoxjt1LZ3esh9rgQeWHsrtmFZ8j9b0",
+    "id": "3fca3668-bfde-4407-8a18-7a5c36396d18",
+    "is_active": true,
+    "created_at": "2026-11-16T02:28:40.851608+00:00",
+    "updated_at": "2026-11-16T02:28:40.851631+00:00"
+  },
+  {
+    "name": "Bruno Lima",
+    "email": "bruno@email.com",
+    "phone": "21933334444",
+    "password_hash": "$argon2id$v=19$m=19456,t=2,p=1$0nPUJchJi/FUKUk5F6CA8g$pi/2r7QJbAmqHeJy2TCMlkk3acp7lpETnNaxDn+iMXU",
+    "id": "e56b43df-e505-4ab3-97e0-0ade62ff7c51",
+    "is_active": true,
+    "created_at": "2026-11-16T02:28:40.937155+00:00",
+    "updated_at": "2026-11-16T02:28:40.937175+00:00"
+  }
+]
