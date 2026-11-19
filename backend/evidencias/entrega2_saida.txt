@@ -1,4 +1,4 @@
-Demonstração Entrega 2 — 2026-11-15 23:28:40
+Demonstração Entrega 2 — 2026-11-18 20:15:55
 
 ========================================================================
  1. Configuração do hash de senha
@@ -20,31 +20,31 @@ Dois usuários cadastrados com a MESMA senha: 'senha1234'
     "name": "Ana Souza",
     "email": "ana@email.com",
     "phone": "11911112222",
-    "password_hash": "$argon2id$v=19$m=19456,t=2,p=1$+nFxdeyVNtzgpXI2dA6TqA$zpWwHUq3zw6UGWoxjt1LZ3esh9rgQeWHsrtmFZ8j9b0",
-    "id": "3fca3668-bfde-4407-8a18-7a5c36396d18",
+    "password_hash": "$argon2id$v=19$m=19456,t=2,p=1$ykl3tlEC3CUvQYbg0AwMxQ$8zVmxro8RjVCub6wwXh88RQvZPaG6spRxdgA03P4+YY",
+    "id": "e212127a-049e-4953-bff2-9b723bd4b38e",
     "is_active": true,
-    "created_at": "2026-11-16T02:28:40.851608+00:00",
-    "updated_at": "2026-11-16T02:28:40.851631+00:00"
+    "created_at": "2026-11-18T23:15:56.142934+00:00",
+    "updated_at": "2026-11-18T23:15:56.142945+00:00"
   },
   {
     "name": "Bruno Lima",
     "email": "bruno@email.com",
     "phone": "21933334444",
-    "password_hash": "$argon2id$v=19$m=19456,t=2,p=1$0nPUJchJi/FUKUk5F6CA8g$pi/2r7QJbAmqHeJy2TCMlkk3acp7lpETnNaxDn+iMXU",
-    "id": "e56b43df-e505-4ab3-97e0-0ade62ff7c51",
+    "password_hash": "$argon2id$v=19$m=19456,t=2,p=1$ssiq10HN7R99tWYh2Bgf3g$JFpFxj92CCvS7ryotarRGfFFGwluOmqVBwTftwXYWOo",
+    "id": "ad8b5df2-5897-49a0-935f-2b570a24feee",
     "is_active": true,
-    "created_at": "2026-11-16T02:28:40.937155+00:00",
-    "updated_at": "2026-11-16T02:28:40.937175+00:00"
+    "created_at": "2026-11-18T23:15:56.212950+00:00",
+    "updated_at": "2026-11-18T23:15:56.212958+00:00"
   }
 ]
 
 Ana Souza: algoritmo=argon2id v=19 parâmetros=m=19456,t=2,p=1
-  salt = +nFxdeyVNtzgpXI2dA6TqA
-  hash = zpWwHUq3zw6UGWoxjt1LZ3esh9rgQeWHsrtmFZ8j9b0
+  salt = ykl3tlEC3CUvQYbg0AwMxQ
+  hash = 8zVmxro8RjVCub6wwXh88RQvZPaG6spRxdgA03P4+YY
 
 Bruno Lima: algoritmo=argon2id v=19 parâmetros=m=19456,t=2,p=1
-  salt = 0nPUJchJi/FUKUk5F6CA8g
-  hash = pi/2r7QJbAmqHeJy2TCMlkk3acp7lpETnNaxDn+iMXU
+  salt = ssiq10HN7R99tWYh2Bgf3g
+  hash = JFpFxj92CCvS7ryotarRGfFFGwluOmqVBwTftwXYWOo
 
 -> Mesma senha, hashes DIFERENTES (salt único por usuário).
 -> Nenhum campo contém a senha em texto puro.
@@ -53,10 +53,10 @@ Bruno Lima: algoritmo=argon2id v=19 parâmetros=m=19456,t=2,p=1
 ========================================================================
  3. Login correto e incorreto
 ========================================================================
-Senha correta            75.0 ms  OK   -> sessão iduzWrbsZ7Ra… válida até 03:28
-Senha errada             75.7 ms  NEGADO -> AuthenticationError: E-mail ou senha inválidos.
-Maiúscula diferente      66.3 ms  NEGADO -> AuthenticationError: E-mail ou senha inválidos.
-E-mail inexistente       75.1 ms  NEGADO -> AuthenticationError: E-mail ou senha inválidos.
+Senha correta            62.9 ms  OK   -> sessão 1DC_Cx_mjkKP… válida até 00:15
+Senha errada             62.8 ms  NEGADO -> AuthenticationError: E-mail ou senha inválidos.
+Maiúscula diferente      60.4 ms  NEGADO -> AuthenticationError: E-mail ou senha inválidos.
+E-mail inexistente       60.3 ms  NEGADO -> AuthenticationError: E-mail ou senha inválidos.
 E-mail inválido           0.0 ms  NEGADO -> ValidationError: E-mail inválido.
 Senha vazia               0.0 ms  NEGADO -> ValidationError: Informe a senha.
 
@@ -73,15 +73,15 @@ a) Sem salt, a mesma senha gera sempre o mesmo hash:
       pré-calculadas (rainbow tables) quebram o hash na hora.
 
 b) Ataque de dicionário contra o hash SHA-256 vazado:
-   senha descoberta: 'senha1234' em 0.036 ms
+   senha descoberta: 'senha1234' em 0.051 ms
 
 c) Velocidade — quanto mais rápido, pior para senhas:
-   SHA-256  :        530,394 tentativas/s (1 núcleo de CPU; GPUs fazem bilhões)
-   Argon2id :           14.6 tentativas/s (e ~19 MiB de RAM por tentativa)
-   -> Argon2id é ~36,239x mais caro por tentativa.
+   SHA-256  :        833,294 tentativas/s (1 núcleo de CPU; GPUs fazem bilhões)
+   Argon2id :           24.9 tentativas/s (e ~19 MiB de RAM por tentativa)
+   -> Argon2id é ~33,478x mais caro por tentativa.
    Testar a lista rockyou (14,344,391 senhas) contra UM usuário:
-      SHA-256  ~ 27.04 s
-      Argon2id ~ 11.3 dias
+      SHA-256  ~ 17.21 s
+      Argon2id ~ 6.7 dias
 
    SHA-256 foi feito para ser RÁPIDO (integridade de arquivos, assinaturas).
    Senha precisa de função LENTA, com salt e custo ajustável (KDF de senha).
@@ -111,9 +111,9 @@ hmac.compare_digest(diferentes) -> False
  6. Compatibilidade: migração de hash legado (sem quebrar contas)
 ========================================================================
 Conta antiga com hash PBKDF2 de 200.000 iterações (configuração anterior):
-   antes : pbkdf2_sha256$200000$eb378249610da86ed96fee0f1d6a3d2b$c9a390…
+   antes : pbkdf2_sha256$200000$38dc392eb9b7cfbeb596386e91b17acf$b62370…
 Login correto -> hash regravado automaticamente com Argon2id:
-   depois: $argon2id$v=19$m=19456,t=2,p=1$NheYm1AbdY3kTba63SRSCA$2P4jcl…
+   depois: $argon2id$v=19$m=19456,t=2,p=1$KlWkX7e7jBR6eAzKQWf5Uw$CDEMBt…
 -> Nenhum usuário precisou trocar a senha e nada foi removido.
 
 ========================================================================
